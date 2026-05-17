@@ -10,9 +10,9 @@ import { placementPrediction } from '../../data/dummy';
 const companies = placementPrediction.recommendedCompanies;
 
 const statusIcon: Record<string, React.ReactNode> = {
-  'Not Started': <Circle size={16} className="text-muted" />,
-  'In Progress': <Clock size={16} className="text-amber-400" />,
-  'Ready': <CheckCircle size={16} className="text-lime" />,
+  'Not Started': <Circle size={16} className="text-text-muted" />,
+  'In Progress': <Clock size={16} className="text-warning" />,
+  'Ready': <CheckCircle size={16} className="text-gold" />,
 };
 
 export default function CompanyTracker() {
@@ -24,19 +24,20 @@ export default function CompanyTracker() {
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="text-3xl font-heading font-bold tracking-tight text-text-primary">Company Tracker</h1>
-        <p className="text-text-secondary font-body mt-1">Track and manage your preparation for target companies</p>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+        <p className="premium-label mb-4">Tracker</p>
+        <h1 className="text-5xl md:text-6xl font-heading font-bold tracking-tight text-text-primary">Company Tracker</h1>
+        <p className="text-text-secondary font-body mt-3 text-lg">Track and manage your preparation for target companies</p>
       </motion.div>
 
       <div className="relative mb-8 max-w-md">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
         <input
           type="text"
           placeholder="Search companies..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full glass rounded-xl pl-12 pr-4 py-3 text-text-primary font-body placeholder:text-muted focus:outline-none focus:border-lime/30 transition-all"
+          className="w-full bg-bg-elevated border border-border rounded-xl pl-12 pr-4 py-3 text-text-primary font-body placeholder:text-text-muted focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all"
         />
       </div>
 
@@ -48,14 +49,14 @@ export default function CompanyTracker() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.05 }}
           >
-            <GlassCard>
+            <GlassCard className="p-6">
               <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
                 <div className="flex items-center gap-4 flex-1">
                   <div className="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center overflow-hidden">
                     <img src={company.logo} alt={company.name} className="w-8 h-8 object-contain" />
                   </div>
                   <div>
-                    <h3 className="font-heading font-semibold text-text-primary text-lg">{company.name}</h3>
+                    <h3 className="font-heading text-xl text-text-primary">{company.name}</h3>
                     <div className="flex items-center gap-3 mt-1">
                       <Badge variant={
                         company.difficulty === 'Hard' ? 'danger' :
@@ -63,7 +64,7 @@ export default function CompanyTracker() {
                       }>
                         {company.difficulty}
                       </Badge>
-                      <span className="font-mono text-xs text-muted uppercase tracking-wider">{company.rounds.length} Rounds</span>
+                      <span className="font-body text-xs text-text-secondary uppercase tracking-widest">{company.rounds.length} Rounds</span>
                     </div>
                   </div>
                 </div>
@@ -76,10 +77,10 @@ export default function CompanyTracker() {
 
                   <div className="w-32">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs text-muted uppercase tracking-wider">Prep</span>
-                      <span className="font-mono text-xs text-lime">{company.preparationProgress}%</span>
+                      <span className="font-body text-xs text-text-secondary uppercase tracking-widest">Prep</span>
+                      <span className="font-body text-xs text-gold">{company.preparationProgress}%</span>
                     </div>
-                    <ProgressBar value={company.preparationProgress} size="sm" color="bg-lime" showValue={false} />
+                    <ProgressBar value={company.preparationProgress} size="sm" color="bg-gold" showValue={false} />
                   </div>
 
                   <NeonButton size="sm" variant="ghost">
@@ -88,7 +89,7 @@ export default function CompanyTracker() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-white/5">
+              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
                 {company.requiredSkills.map((skill) => (
                   <Badge key={skill}>{skill}</Badge>
                 ))}

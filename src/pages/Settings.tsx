@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Shield, Bell, Moon, Sun } from 'lucide-react';
+import { User, Shield, Bell, Sun } from 'lucide-react';
 import GlassCard from '../components/ui/GlassCard';
 import Input from '../components/ui/Input';
 import NeonButton from '../components/ui/NeonButton';
@@ -10,19 +10,19 @@ const tabs = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'security', label: 'Security', icon: Shield },
   { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'theme', label: 'Theme', icon: Moon },
+  { id: 'theme', label: 'Theme', icon: Sun },
 ];
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('profile');
-  const [darkMode, setDarkMode] = useState(true);
   const { profile } = useAuth();
 
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="text-3xl font-heading font-bold tracking-tight text-text-primary">Settings</h1>
-        <p className="text-text-secondary font-body mt-1">Manage your account preferences</p>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+        <p className="premium-label mb-4">Preferences</p>
+        <h1 className="text-5xl md:text-6xl font-heading font-bold tracking-tight text-text-primary">Settings</h1>
+        <p className="text-text-secondary font-body mt-3 text-lg">Manage your account preferences</p>
       </motion.div>
 
       <div className="flex gap-3 mb-8 overflow-x-auto">
@@ -32,10 +32,10 @@ export default function Settings() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-body transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-body transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'bg-lime text-black'
-                  : 'glass text-text-secondary hover:text-text-primary'
+                  ? 'bg-gold text-black font-semibold'
+                  : 'bg-bg-card text-text-secondary hover:text-text-primary'
               }`}
             >
               <Icon size={16} />
@@ -45,10 +45,10 @@ export default function Settings() {
         })}
       </div>
 
-      <GlassCard>
+      <GlassCard className="p-8">
         {activeTab === 'profile' && (
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">Profile Settings</h3>
+            <h3 className="font-heading text-xl text-text-primary mb-6">Profile Settings</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
               <Input label="Full Name" defaultValue={profile?.full_name} />
               <Input label="Email" defaultValue={profile?.email} />
@@ -63,7 +63,7 @@ export default function Settings() {
 
         {activeTab === 'security' && (
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">Security Settings</h3>
+            <h3 className="font-heading text-xl text-text-primary mb-6">Security Settings</h3>
             <div className="max-w-md space-y-4">
               <Input label="Current Password" type="password" placeholder="••••••••" />
               <Input label="New Password" type="password" placeholder="••••••••" />
@@ -75,7 +75,7 @@ export default function Settings() {
 
         {activeTab === 'notifications' && (
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">Notification Preferences</h3>
+            <h3 className="font-heading text-xl text-text-primary mb-6">Notification Preferences</h3>
             <div className="space-y-4 max-w-lg">
               {[
                 { label: 'Skill Gap Alerts', desc: 'Get notified when new skill gaps are detected' },
@@ -83,14 +83,14 @@ export default function Settings() {
                 { label: 'Recommendations', desc: 'Get personalized course and project suggestions' },
                 { label: 'Weekly Reports', desc: 'Receive weekly progress summary via email' },
               ].map((item) => (
-                <div key={item.label} className="flex items-center justify-between p-4 glass rounded-xl">
+                <div key={item.label} className="flex items-center justify-between p-4 bg-bg-elevated rounded-xl">
                   <div>
                     <p className="font-body text-sm text-text-primary">{item.label}</p>
                     <p className="font-body text-xs text-text-secondary mt-0.5">{item.desc}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-white/10 rounded-full peer peer-checked:bg-lime after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                    <div className="w-11 h-6 bg-white/10 rounded-full peer peer-checked:bg-gold after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-black after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
                   </label>
                 </div>
               ))}
@@ -100,25 +100,17 @@ export default function Settings() {
 
         {activeTab === 'theme' && (
           <div>
-            <h3 className="font-heading font-semibold text-text-primary mb-6">Theme Settings</h3>
+            <h3 className="font-heading text-xl text-text-primary mb-6">Theme Settings</h3>
             <div className="max-w-md">
-              <div className="flex items-center justify-between p-4 glass rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-bg-elevated rounded-xl">
                 <div className="flex items-center gap-3">
-                  {darkMode ? <Moon size={20} className="text-lime" /> : <Sun size={20} className="text-amber-400" />}
+                  <Sun size={20} className="text-gold" />
                   <div>
-                    <p className="font-body text-sm text-text-primary">Dark Mode</p>
-                    <p className="font-body text-xs text-text-secondary">Current: {darkMode ? 'Dark' : 'Light'}</p>
+                    <p className="font-body text-sm text-text-primary">Dark Theme</p>
+                    <p className="font-body text-xs text-text-secondary">Modern Professional Luxury</p>
                   </div>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={darkMode}
-                    onChange={() => setDarkMode(!darkMode)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-white/10 rounded-full peer peer-checked:bg-lime after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
-                </label>
+                <span className="font-body text-xs text-gold uppercase tracking-widest">Active</span>
               </div>
             </div>
           </div>

@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, X, ChevronRight, Star, ExternalLink, Download, UserPlus, CheckCircle2 } from 'lucide-react';
+import { Search, Filter, X, ChevronRight, ExternalLink, Download, UserPlus, CheckCircle2 } from 'lucide-react';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
 import NeonButton from '../../components/ui/NeonButton';
-import Input from '../../components/ui/Input';
 
 const mockCandidates = [
   {
@@ -359,7 +358,7 @@ export default function CandidateSearch() {
                   </button>
                 </div>
                 <div className="flex gap-3">
-                  <NeonButton variant="outline" size="md">
+                    <NeonButton variant="secondary" size="md">
                     <UserPlus size={18} /> Shortlist
                   </NeonButton>
                   <NeonButton size="md">

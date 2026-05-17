@@ -5,7 +5,7 @@ interface BarChartProps {
   color?: string;
 }
 
-export default function BarChart({ data, color = '#ccff00' }: BarChartProps) {
+export default function BarChart({ data, color = '#D4AF37' }: BarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={280}>
       <RechartsBar data={data} barSize={32}>
@@ -13,7 +13,7 @@ export default function BarChart({ data, color = '#ccff00' }: BarChartProps) {
         <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} />
         <YAxis tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ background: '#0c0c0c', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#ebebeb' }}
+          contentStyle={{ background: '#141414', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff' }}
         />
         <Bar dataKey="value" fill={color} radius={[8, 8, 0, 0]} />
       </RechartsBar>

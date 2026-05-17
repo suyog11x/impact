@@ -1,100 +1,111 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Play, Sparkles } from 'lucide-react';
-import NeonButton from '../ui/NeonButton';
-import StatusTag from '../ui/StatusTag';
+import { ArrowRight } from 'lucide-react';
 
-export default function Hero() {
+interface HeroProps {
+  isDark: boolean;
+}
+
+export default function Hero({ isDark }: HeroProps) {
   return (
-    <section className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden">
-      <div className="absolute inset-0 grid-pattern" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-lime/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-lime/5 rounded-full blur-[100px] pointer-events-none" />
+    <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden">
+      {/* Background blobs */}
+      <motion.div 
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className={`absolute top-20 left-10 w-80 h-80 rounded-full blur-[100px] ${
+          isDark ? 'bg-gold/5' : 'bg-landing-coral/60'
+        }`} 
+      />
+      <motion.div 
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className={`absolute bottom-20 right-10 w-72 h-72 rounded-full blur-[100px] ${
+          isDark ? 'bg-gold/5' : 'bg-landing-lavender/60'
+        }`} 
+      />
 
-      <div className="max-w-[1600px] mx-auto px-6 w-full">
-        <div className="grid grid-cols-12 gap-8 items-center">
-          <div className="col-span-12 lg:col-span-7">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="mb-6">
-                <StatusTag />
-              </div>
-
-              <h1 className="font-heading font-bold text-[3.5rem] sm:text-[5rem] md:text-[6rem] lg:text-[7rem] leading-[1.0] tracking-[-0.06em] text-text-primary mb-6 pb-4">
-                Bridge The{' '}
-                <span className="italic bg-gradient-to-r from-lime to-white bg-clip-text text-transparent">
-                  Gap
-                </span>{' '}
-                Between<br />
-                Academics & Industry
-              </h1>
-
-              <p className="text-lg md:text-xl text-text-secondary font-body max-w-xl mb-10 leading-relaxed">
-                AI-powered placement readiness analysis that identifies skill gaps, creates personalized roadmaps, and predicts your placement success.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-4 mb-12">
-                <NeonButton size="lg" onClick={() => window.location.href = '/signup'}>
-                  Get Started <ArrowRight size={20} />
-                </NeonButton>
-                <NeonButton variant="ghost" size="lg" onClick={() => window.location.href = '/login'}>
-                  <Play size={18} /> Explore Dashboard
-                </NeonButton>
-              </div>
-
-              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-muted">
-                <Sparkles size={14} className="text-lime" />
-                AI PLACEMENT ENGINE v2.0
-              </div>
-            </motion.div>
+      <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.8 }}
+        >
+          {/* Tag */}
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-landing font-medium tracking-widest uppercase mb-8 ${
+            isDark ? 'bg-gold/10 text-gold' : 'bg-landing-coral/20 text-landing-text'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-gold' : 'bg-landing-coral'}`} />
+            AI placement engine
           </div>
 
-          <div className="col-span-12 lg:col-span-5">
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+          {/* Headline */}
+          <h1 className={`font-landing font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6 ${
+            isDark ? 'text-text-primary' : 'text-landing-text'
+          }`}>
+            Bridge the gap between
+            <br />
+            academics and{' '}
+            <span className="font-cursive text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal" style={{ color: isDark ? '#D4AF37' : '#FFB7B2' }}>
+              industry
+            </span>
+          </h1>
+
+          {/* Sub-headline */}
+          <p className={`text-lg md:text-xl font-landing max-w-lg mx-auto mb-10 leading-relaxed ${
+            isDark ? 'text-text-secondary' : 'text-landing-muted'
+          }`}>
+            AI-powered placement readiness analysis that identifies skill gaps, creates personalized roadmaps, and predicts your placement success.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
+            <motion.a
+              href="/signup"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className={`inline-flex items-center gap-2 px-8 py-4 rounded-full font-landing font-semibold text-base ${
+                isDark 
+                  ? 'bg-gold text-black hover:bg-gold-light' 
+                  : 'bg-landing-coral text-landing-text hover:bg-landing-coral/90'
+              }`}
+              style={{ boxShadow: isDark ? '0 4px 20px rgba(212, 175, 55, 0.3)' : '0 4px 20px rgba(255, 183, 178, 0.4)' }}
             >
-              <div className="floating">
-                <div className="glass-strong p-6 rounded-[2.5rem] relative">
-                  <div className="absolute -top-3 -right-3 px-3 py-1.5 glass rounded-full text-xs font-mono text-lime flex items-center gap-1.5">
-                    <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-lime" />
-                    AI CURATED
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="glass p-4 rounded-2xl">
-                      <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">Readiness</p>
-                      <p className="text-3xl font-heading font-bold text-lime">82%</p>
-                      <div className="w-full bg-white/5 h-1.5 rounded-full mt-2 overflow-hidden">
-                        <div className="bg-lime h-full rounded-full" style={{ width: '82%' }} />
-                      </div>
-                    </div>
-                    <div className="glass p-4 rounded-2xl">
-                      <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">Resume</p>
-                      <p className="text-3xl font-heading font-bold text-lime">74</p>
-                      <div className="w-full bg-white/5 h-1.5 rounded-full mt-2 overflow-hidden">
-                        <div className="bg-lime h-full rounded-full" style={{ width: '74%' }} />
-                      </div>
-                    </div>
-                    <div className="glass p-4 rounded-2xl">
-                      <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">Coding</p>
-                      <p className="text-3xl font-heading font-bold text-lime">78%</p>
-                      <div className="w-full bg-white/5 h-1.5 rounded-full mt-2 overflow-hidden">
-                        <div className="bg-lime h-full rounded-full" style={{ width: '78%' }} />
-                      </div>
-                    </div>
-                    <div className="glass p-4 rounded-2xl">
-                      <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">AI Recs</p>
-                      <p className="text-xs font-body text-text-secondary leading-relaxed">
-                        Focus on Docker, AWS & System Design
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              Get started <ArrowRight size={18} />
+            </motion.a>
+            <motion.a
+              href="/login"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className={`inline-flex items-center gap-2 px-8 py-4 rounded-full font-landing font-medium text-base ${
+                isDark 
+                  ? 'bg-transparent text-text-primary border border-border hover:bg-white/5' 
+                  : 'bg-white text-landing-text border border-landing-stone-200 hover:bg-landing-stone-50'
+              }`}
+            >
+              Explore dashboard
+            </motion.a>
           </div>
-        </div>
+
+          {/* Stats */}
+          <div className={`flex items-center justify-center gap-8 font-landing text-sm ${
+            isDark ? 'text-text-muted' : 'text-landing-stone-400'
+          }`}>
+            <div className="text-center">
+              <p className={`text-2xl font-bold ${isDark ? 'text-text-primary' : 'text-landing-text'}`}>2,800+</p>
+              <p>Students</p>
+            </div>
+            <div className={`w-px h-8 ${isDark ? 'bg-border' : 'bg-landing-stone-200'}`} />
+            <div className="text-center">
+              <p className={`text-2xl font-bold ${isDark ? 'text-text-primary' : 'text-landing-text'}`}>89</p>
+              <p>Companies</p>
+            </div>
+            <div className={`w-px h-8 ${isDark ? 'bg-border' : 'bg-landing-stone-200'}`} />
+            <div className="text-center">
+              <p className={`text-2xl font-bold ${isDark ? 'text-text-primary' : 'text-landing-text'}`}>74%</p>
+              <p>Placement rate</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

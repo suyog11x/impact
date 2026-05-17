@@ -1,72 +1,91 @@
 import { motion } from 'framer-motion';
 import { FileText, GitFork, Code, Target, Route, Mic, TrendingUp, Building2 } from 'lucide-react';
 
+interface FeaturesProps {
+  isDark: boolean;
+}
+
 const iconMap: Record<string, React.ReactNode> = {
-  FileText: <FileText size={28} />,
-  Github: <GitFork size={28} />,
-  Code: <Code size={28} />,
-  Target: <Target size={28} />,
-  Route: <Route size={28} />,
-  Mic: <Mic size={28} />,
-  TrendingUp: <TrendingUp size={28} />,
-  Building2: <Building2 size={28} />,
+  FileText: <FileText size={24} />,
+  Github: <GitFork size={24} />,
+  Code: <Code size={24} />,
+  Target: <Target size={24} />,
+  Route: <Route size={24} />,
+  Mic: <Mic size={24} />,
+  TrendingUp: <TrendingUp size={24} />,
+  Building2: <Building2 size={24} />,
 };
 
 const featuresData = [
-  { title: 'Resume Analyzer', description: 'AI-powered resume analysis with ATS scoring and keyword optimization', icon: 'FileText', accent: false },
-  { title: 'GitHub Analysis', description: 'Deep analysis of your GitHub profile, contributions, and code quality', icon: 'Github', accent: false },
-  { title: 'Coding Profile Analysis', description: 'Aggregated performance across LeetCode, CodeChef, HackerRank', icon: 'Code', accent: false },
-  { title: 'Skill Gap Detection', description: 'AI identifies missing skills required for your target companies', icon: 'Target', accent: true },
-  { title: 'AI Learning Roadmap', description: 'Personalized monthly roadmap to bridge your skill gaps', icon: 'Route', accent: false },
-  { title: 'Mock Interviews', description: 'AI-conducted mock interviews with detailed performance reports', icon: 'Mic', accent: false },
-  { title: 'Placement Prediction', description: 'ML-based prediction of your placement probability', icon: 'TrendingUp', accent: false },
-  { title: 'Company Tracker', description: 'Track preparation progress for your dream companies', icon: 'Building2', accent: false },
+  { title: 'Resume analyzer', description: 'AI-powered resume analysis with ATS scoring', icon: 'FileText', accent: '#E8EFE8' },
+  { title: 'GitHub analysis', description: 'Deep analysis of your GitHub contributions', icon: 'Github', accent: '#EFEDF4' },
+  { title: 'Coding profiles', description: 'LeetCode, CodeChef, HackerRank aggregated', icon: 'Code', accent: '#FFE4E1' },
+  { title: 'Skill gap detection', description: 'AI identifies missing skills for target roles', icon: 'Target', accent: '#FFB7B2' },
+  { title: 'Learning roadmap', description: 'Personalized monthly milestones', icon: 'Route', accent: '#E8EFE8' },
+  { title: 'Mock interviews', description: 'AI-conducted interviews with reports', icon: 'Mic', accent: '#EFEDF4' },
+  { title: 'Placement prediction', description: 'ML-based placement probability', icon: 'TrendingUp', accent: '#FFE4E1' },
+  { title: 'Company tracker', description: 'Track preparation for dream companies', icon: 'Building2', accent: '#E8EFE8' },
 ];
 
-export default function Features() {
+export default function Features({ isDark }: FeaturesProps) {
   return (
-    <section id="features" className="relative py-32">
-      <div className="absolute inset-0 grid-pattern" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-lime/5 rounded-full blur-[150px] pointer-events-none" />
-
-      <div className="max-w-[1600px] mx-auto px-6 relative">
+    <section id="features" className="relative py-20 md:py-32 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-lime mb-4">FEATURES</p>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold tracking-tight text-text-primary mb-4">
-            Everything You Need to<br />Land Your Dream Role
-          </h2>
-          <p className="text-text-secondary font-body max-w-xl mx-auto">
-            From skill analysis to placement prediction — one unified platform for your entire placement journey.
+          <p className={`font-landing text-sm font-medium tracking-widest uppercase mb-4 ${
+            isDark ? 'text-gold' : 'text-landing-muted'
+          }`}>
+            Features
           </p>
+          <h2 className={`font-landing font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight max-w-2xl mx-auto ${
+            isDark ? 'text-text-primary' : 'text-landing-text'
+          }`}>
+            Everything you need to land your dream role
+          </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Horizontal scroll */}
+        <div className="flex gap-4 overflow-x-auto pb-6 -mx-6 px-6 snap-x snap-mandatory scrollbar-none">
           {featuresData.map((feature, idx) => (
             <motion.div
               key={feature.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              className={`rounded-[2.5rem] p-8 ${
-                feature.accent
-                  ? 'bg-lime text-black'
-                  : 'glass hover:border-lime/30 transition-all duration-300'
+              transition={{ duration: 0.8, delay: idx * 0.08 }}
+              className={`snap-start flex-shrink-0 w-72 h-40 rounded-3xl p-6 flex flex-col justify-between transition-colors duration-300 cursor-pointer ${
+                isDark 
+                  ? 'bg-bg-card border border-border hover:border-gold/30' 
+                  : 'bg-white border border-landing-stone-100 hover:shadow-lg'
               }`}
+              style={{ '--hover-color': feature.accent } as React.CSSProperties}
             >
-              <div className={`mb-5 ${feature.accent ? 'text-black' : 'text-lime'}`}>
-                {iconMap[feature.icon]}
+              <div className="flex items-start justify-between">
+                <span className={`font-landing text-xs tracking-widest ${
+                  isDark ? 'text-text-muted' : 'text-landing-stone-400'
+                }`}>
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
+                <span className={isDark ? 'text-gold' : 'text-landing-text'}>
+                  {iconMap[feature.icon]}
+                </span>
               </div>
-              <h3 className={`text-xl font-heading font-semibold tracking-tight mb-3 ${feature.accent ? 'text-black' : 'text-text-primary'}`}>
-                {feature.title}
-              </h3>
-              <p className={`font-body text-sm leading-relaxed ${feature.accent ? 'text-black/70' : 'text-text-secondary'}`}>
-                {feature.description}
-              </p>
+              <div>
+                <h3 className={`font-landing font-semibold text-lg mb-1 transition-colors ${
+                  isDark ? 'text-text-primary' : 'text-landing-stone-800'
+                }`}>
+                  {feature.title}
+                </h3>
+                <p className={`font-landing text-sm ${
+                  isDark ? 'text-text-secondary' : 'text-landing-muted'
+                }`}>
+                  {feature.description}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>

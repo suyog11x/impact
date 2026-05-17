@@ -5,7 +5,7 @@ interface LineChartProps {
   color?: string;
 }
 
-export default function LineChart({ data, color = '#ccff00' }: LineChartProps) {
+export default function LineChart({ data, color = '#D4AF37' }: LineChartProps) {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <RechartsLine data={data}>
@@ -13,7 +13,7 @@ export default function LineChart({ data, color = '#ccff00' }: LineChartProps) {
         <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} />
         <YAxis tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ background: '#0c0c0c', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#ebebeb' }}
+          contentStyle={{ background: '#141414', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', color: '#fff' }}
         />
         <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2} dot={{ fill: color, r: 4 }} />
       </RechartsLine>

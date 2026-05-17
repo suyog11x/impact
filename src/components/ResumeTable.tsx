@@ -5,7 +5,7 @@ import { deepClone } from '../lib/deep-clone';
 import { cx } from '../lib/cx';
 
 const TableRowHeader = ({ children }: { children: React.ReactNode }) => (
-  <tr className="divide-x bg-white/5">
+  <tr className="divide-x bg-bg-elevated">
     <th className="px-3 py-2 font-semibold text-text-primary text-left" scope="colgroup" colSpan={2}>
       {children}
     </th>
@@ -21,7 +21,7 @@ const TableRow = ({
   value: string | string[];
   className?: string | false;
 }) => (
-  <tr className={cx('divide-x border-b border-white/5', className || '')}>
+  <tr className={cx('divide-x border-b border-border', className || '')}>
     <th className="px-3 py-2 font-medium text-text-secondary text-left whitespace-nowrap w-28" scope="row">
       {label}
     </th>
@@ -54,8 +54,8 @@ export const ResumeTable = ({ resume }: { resume: Resume }) => {
   if (featuredSkills) skills.unshift(featuredSkills);
 
   return (
-    <table className="mt-2 w-full border border-white/10 rounded-xl overflow-hidden text-sm text-text-primary">
-      <tbody className="divide-y border-white/10 text-left align-top">
+    <table className="mt-2 w-full border border-border rounded-xl overflow-hidden text-sm text-text-primary">
+      <tbody className="divide-y border-border text-left align-top">
         <TableRowHeader>Profile</TableRowHeader>
         <TableRow label="Name" value={resume.profile.name} />
         <TableRow label="Email" value={resume.profile.email} />

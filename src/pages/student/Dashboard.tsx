@@ -8,11 +8,11 @@ import { skills, studentStats, skillGap } from '../../data/dummy';
 import { useAuth } from '../../context/AuthContext';
 
 const statCards = [
-  { label: 'Industry Readiness Score', value: `${studentStats.readinessScore}%`, icon: TrendingUp, color: 'text-lime' },
-  { label: 'Resume Score', value: `${studentStats.resumeScore}/100`, icon: FileText, color: 'text-lime' },
-  { label: 'Coding Score', value: `${studentStats.codingScore}%`, icon: Code, color: 'text-lime' },
-  { label: 'Communication Score', value: `${studentStats.communicationScore}%`, icon: MessageSquare, color: 'text-lime' },
-  { label: 'Internship Score', value: `${studentStats.internshipScore}%`, icon: Award, color: 'text-lime' },
+  { label: 'Industry Readiness Score', value: `${studentStats.readinessScore}%`, icon: TrendingUp },
+  { label: 'Resume Score', value: `${studentStats.resumeScore}/100`, icon: FileText },
+  { label: 'Coding Score', value: `${studentStats.codingScore}%`, icon: Code },
+  { label: 'Communication Score', value: `${studentStats.communicationScore}%`, icon: MessageSquare },
+  { label: 'Internship Score', value: `${studentStats.internshipScore}%`, icon: Award },
 ];
 
 const radarData = skills.filter(s => ['DSA', 'Algorithms', 'React', 'TypeScript', 'Python', 'SQL'].includes(s.name)).map(s => ({
@@ -33,12 +33,15 @@ export default function StudentDashboard() {
   const { profile } = useAuth();
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="text-3xl font-heading font-bold tracking-tight text-text-primary">Dashboard</h1>
-        <p className="text-text-secondary font-body mt-1">Welcome back, {profile?.full_name ?? profile?.email ?? 'there'}! Here&apos;s your placement readiness overview.</p>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+        <p className="premium-label mb-4">Dashboard Overview</p>
+        <h1 className="text-5xl md:text-6xl font-heading font-bold tracking-tight text-text-primary">
+          Welcome back, {profile?.full_name?.split(' ')[0] ?? profile?.email?.split('@')[0] ?? 'there'}
+        </h1>
+        <p className="text-text-secondary font-body mt-3 text-lg">Here&apos;s your placement readiness overview.</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
           return (
@@ -48,50 +51,50 @@ export default function StudentDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <GlassCard className="text-center" glow>
-                <Icon size={22} className={`mx-auto mb-2 ${stat.color}`} />
-                <p className="text-2xl font-heading font-bold text-text-primary">{stat.value}</p>
-                <p className="text-xs font-body text-text-secondary mt-1">{stat.label}</p>
+              <GlassCard className="text-center p-6" accent>
+                <Icon size={24} className="mx-auto mb-3 text-gold" />
+                <p className="text-3xl font-heading font-bold text-text-primary">{stat.value}</p>
+                <p className="text-xs font-body text-text-secondary mt-2">{stat.label}</p>
               </GlassCard>
             </motion.div>
           );
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <GlassCard className="lg:col-span-1">
-          <h3 className="font-heading font-semibold text-text-primary mb-2">Skill Radar</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <GlassCard className="lg:col-span-1 p-6">
+          <h3 className="font-heading text-xl text-text-primary mb-4">Skill Radar</h3>
           <RadarChart data={radarData} />
         </GlassCard>
 
-        <GlassCard className="lg:col-span-2">
-          <h3 className="font-heading font-semibold text-text-primary mb-2">Readiness Progress</h3>
+        <GlassCard className="lg:col-span-2 p-6">
+          <h3 className="font-heading text-xl text-text-primary mb-4">Readiness Progress</h3>
           <LineChart data={monthlyData} />
         </GlassCard>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <GlassCard>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-heading font-semibold text-text-primary">Missing Skills</h3>
-            <Target size={18} className="text-lime" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <GlassCard className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-heading text-xl text-text-primary">Missing Skills</h3>
+            <Target size={20} className="text-gold" />
           </div>
           <div className="space-y-3">
             {skillGap.missingSkills.map((skill) => (
-              <div key={skill} className="flex items-center justify-between p-3 glass rounded-xl">
+              <div key={skill} className="flex items-center justify-between p-4 bg-bg-elevated rounded-xl">
                 <div className="flex items-center gap-3">
-                  <AlertTriangle size={16} className="text-amber-400" />
+                  <AlertTriangle size={16} className="text-warning" />
                   <span className="font-body text-sm text-text-primary">{skill}</span>
                 </div>
-                <span className="font-mono text-xs text-amber-400">CRITICAL</span>
+                <span className="font-body text-xs text-warning uppercase tracking-widest">Critical</span>
               </div>
             ))}
           </div>
         </GlassCard>
 
-        <GlassCard>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-heading font-semibold text-text-primary">Skill Levels</h3>
+        <GlassCard className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-heading text-xl text-text-primary">Skill Levels</h3>
           </div>
           <div className="space-y-4">
             {skills.slice(0, 8).map((skill) => (

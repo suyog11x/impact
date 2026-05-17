@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, Mail, Phone, Link2, Plus, Trash2, Download,
+  User, Link2, Plus, Trash2, Download,
   Briefcase, GraduationCap, Layers, Award, ChevronDown, ChevronUp,
   Eye, Edit3, FileText, CheckCircle
 } from 'lucide-react';
@@ -62,21 +62,21 @@ const Field = ({
   placeholder?: string; multiline?: boolean; mono?: boolean;
 }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-xs font-mono text-muted uppercase tracking-wider">{label}</label>
+    <label className="text-xs font-mono text-muted-foreground uppercase tracking-[0.15em]">{label}</label>
     {multiline ? (
       <textarea
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         rows={3}
-        className={`bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-muted focus:outline-none focus:border-lime/40 resize-none transition-colors ${mono ? 'font-mono' : 'font-body'}`}
+        className={`bg-transparent border border-input rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:border-accent resize-none transition-all duration-150 ${mono ? 'font-mono' : 'font-body'}`}
       />
     ) : (
       <input
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-muted focus:outline-none focus:border-lime/40 transition-colors ${mono ? 'font-mono' : 'font-body'}`}
+        className={`bg-transparent border border-input rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:border-accent transition-all duration-150 ${mono ? 'font-mono' : 'font-body'}`}
       />
     )}
   </div>
@@ -90,12 +90,12 @@ const SectionHeader = ({
 }) => (
   <div className="flex items-center justify-between mb-4">
     <button onClick={onToggle} className="flex items-center gap-2 group">
-      <span className="text-lime">{icon}</span>
-      <span className="font-heading font-semibold text-text-primary group-hover:text-lime transition-colors">{title}</span>
-      <span className="text-muted">{open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</span>
+      <span className="text-accent">{icon}</span>
+      <span className="font-heading text-lg text-foreground group-hover:text-accent transition-colors">{title}</span>
+      <span className="text-muted-foreground">{open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</span>
     </button>
     {onAdd && (
-      <button onClick={onAdd} className="flex items-center gap-1.5 text-xs text-lime hover:text-lime/80 transition-colors font-body">
+      <button onClick={onAdd} className="flex items-center gap-1.5 text-xs text-accent hover:text-accent-secondary transition-colors font-body">
         <Plus size={13} /> {addLabel ?? 'Add'}
       </button>
     )}
@@ -285,24 +285,25 @@ export default function ResumeBuilder() {
       {/* Page header */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-lime/10 rounded-xl flex items-center justify-center">
-            <FileText size={20} className="text-lime" />
+          <div className="w-10 h-10 bg-accent-muted rounded-md flex items-center justify-center">
+            <FileText size={20} className="text-accent" />
           </div>
           <div>
-            <h1 className="text-3xl font-heading font-bold tracking-tight text-text-primary">Resume Builder</h1>
-            <p className="text-text-secondary font-body text-sm">Build a clean, ATS-friendly resume with live preview</p>
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.15em] text-accent mb-1">Editor</p>
+            <h1 className="text-4xl font-heading text-foreground">Resume Builder</h1>
+            <p className="text-muted-foreground font-body mt-1 text-lg">Build a clean, ATS-friendly resume with live preview</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setView(view === 'edit' ? 'preview' : 'edit')}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-body border border-white/10 text-text-secondary hover:border-lime/30 hover:text-lime transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-body border border-border text-muted-foreground hover:border-accent hover:text-accent transition-all"
           >
             {view === 'edit' ? <><Eye size={15} /> Preview</> : <><Edit3 size={15} /> Edit</>}
           </button>
           <button
             onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-body border transition-all ${saved ? 'border-lime/40 text-lime bg-lime/5' : 'border-white/10 text-text-secondary hover:border-white/20'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-body border transition-all ${saved ? 'border-accent/40 text-accent bg-accent-muted' : 'border-border text-muted-foreground hover:border-border-hover'}`}
           >
             {saved ? <><CheckCircle size={15} /> Saved!</> : 'Save Draft'}
           </button>
@@ -349,11 +350,11 @@ export default function ResumeBuilder() {
                 {openSections.experience && (
                   <div className="space-y-4">
                     {resume.experience.map((exp, i) => (
-                      <div key={exp.id} className="p-3 bg-white/[0.03] rounded-xl border border-white/5 relative">
+                      <div key={exp.id} className="p-4 bg-muted rounded-md relative">
                         {resume.experience.length > 1 && (
-                          <button onClick={() => removeExp(exp.id)} className="absolute top-2 right-2 text-muted hover:text-red-400 transition-colors"><Trash2 size={13} /></button>
+                          <button onClick={() => removeExp(exp.id)} className="absolute top-2 right-2 text-muted-foreground hover:text-danger transition-colors"><Trash2 size={13} /></button>
                         )}
-                        <p className="text-xs text-muted font-mono mb-2">Position {i + 1}</p>
+                        <p className="text-xs text-muted-foreground font-mono mb-3">Position {i + 1}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <Field label="Job Title" value={exp.title} onChange={v => setExp(exp.id, 'title', v)} placeholder="Software Engineer" />
                           <Field label="Company" value={exp.company} onChange={v => setExp(exp.id, 'company', v)} placeholder="Tech Corp" />
@@ -376,11 +377,11 @@ export default function ResumeBuilder() {
                 {openSections.education && (
                   <div className="space-y-4">
                     {resume.education.map((edu, i) => (
-                      <div key={edu.id} className="p-3 bg-white/[0.03] rounded-xl border border-white/5 relative">
+                      <div key={edu.id} className="p-4 bg-muted rounded-md relative">
                         {resume.education.length > 1 && (
-                          <button onClick={() => removeEdu(edu.id)} className="absolute top-2 right-2 text-muted hover:text-red-400 transition-colors"><Trash2 size={13} /></button>
+                          <button onClick={() => removeEdu(edu.id)} className="absolute top-2 right-2 text-muted-foreground hover:text-danger transition-colors"><Trash2 size={13} /></button>
                         )}
-                        <p className="text-xs text-muted font-mono mb-2">Entry {i + 1}</p>
+                        <p className="text-xs text-muted-foreground font-mono mb-3">Entry {i + 1}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <Field label="Degree / Program" value={edu.degree} onChange={v => setEdu(edu.id, 'degree', v)} placeholder="B.Tech Computer Science" />
                           <Field label="Institution" value={edu.institution} onChange={v => setEdu(edu.id, 'institution', v)} placeholder="IIT Bombay" />
@@ -399,9 +400,9 @@ export default function ResumeBuilder() {
                 {openSections.projects && (
                   <div className="space-y-4">
                     {resume.projects.map((proj, i) => (
-                      <div key={proj.id} className="p-3 bg-white/[0.03] rounded-xl border border-white/5 relative">
-                        <button onClick={() => removeProj(proj.id)} className="absolute top-2 right-2 text-muted hover:text-red-400 transition-colors"><Trash2 size={13} /></button>
-                        <p className="text-xs text-muted font-mono mb-2">Project {i + 1}</p>
+                      <div key={proj.id} className="p-4 bg-muted rounded-md relative">
+                        <button onClick={() => removeProj(proj.id)} className="absolute top-2 right-2 text-muted-foreground hover:text-danger transition-colors"><Trash2 size={13} /></button>
+                        <p className="text-xs text-muted-foreground font-mono mb-3">Project {i + 1}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <Field label="Project Name" value={proj.name} onChange={v => setProj(proj.id, 'name', v)} placeholder="SkillSync AI" />
                           <Field label="Technologies" value={proj.technologies} onChange={v => setProj(proj.id, 'technologies', v)} placeholder="React, FastAPI, Supabase" />
@@ -421,12 +422,12 @@ export default function ResumeBuilder() {
                 {openSections.certifications && (
                   <div className="space-y-3">
                     {resume.certifications.length === 0 && (
-                      <p className="text-text-secondary font-body text-sm">No certifications yet. Click "Add Cert" to start.</p>
+                      <p className="text-muted-foreground font-body text-sm">No certifications yet. Click "Add Cert" to start.</p>
                     )}
                     {resume.certifications.map((cert, i) => (
-                      <div key={cert.id} className="p-3 bg-white/[0.03] rounded-xl border border-white/5 relative">
-                        <button onClick={() => removeCert(cert.id)} className="absolute top-2 right-2 text-muted hover:text-red-400 transition-colors"><Trash2 size={13} /></button>
-                        <p className="text-xs text-muted font-mono mb-2">Cert {i + 1}</p>
+                      <div key={cert.id} className="p-4 bg-muted rounded-md relative">
+                        <button onClick={() => removeCert(cert.id)} className="absolute top-2 right-2 text-muted-foreground hover:text-danger transition-colors"><Trash2 size={13} /></button>
+                        <p className="text-xs text-muted-foreground font-mono mb-3">Cert {i + 1}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                           <Field label="Certificate Name" value={cert.name} onChange={v => setCert(cert.id, 'name', v)} placeholder="AWS Cloud Practitioner" />
                           <Field label="Issuer" value={cert.issuer} onChange={v => setCert(cert.id, 'issuer', v)} placeholder="Amazon" />
@@ -439,11 +440,11 @@ export default function ResumeBuilder() {
               </GlassCard>
 
               {/* Socials / Links hint */}
-              <div className="p-4 glass rounded-2xl border border-lime/10 flex items-start gap-3">
-                <Link2 size={16} className="text-lime shrink-0 mt-0.5" />
+              <div className="p-4 bg-accent-muted rounded-md border border-accent/20 flex items-start gap-3">
+                <Link2 size={16} className="text-accent shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-heading font-semibold text-text-primary mb-0.5">Quick Tip</p>
-                  <p className="text-xs text-text-secondary font-body">
+                  <p className="text-sm font-heading text-foreground mb-0.5">Quick Tip</p>
+                  <p className="text-xs text-muted-foreground font-body">
                     Fill in all contact fields and keep skill keywords relevant to the job — this significantly improves ATS parsing accuracy.
                   </p>
                 </div>
@@ -456,10 +457,10 @@ export default function ResumeBuilder() {
         {/* ── Right: Preview ── */}
         <div ref={previewRef} className={`${view === 'edit' ? 'hidden xl:block' : 'col-span-1 xl:col-span-1'}`}>
           <div className="sticky top-24">
-            <p className="text-xs text-muted font-mono uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Eye size={12} className="text-lime" /> Live Preview
+            <p className="text-xs text-muted-foreground font-mono uppercase tracking-[0.15em] mb-3 flex items-center gap-2">
+              <Eye size={12} className="text-accent" /> Live Preview
             </p>
-            <div className="overflow-y-auto max-h-[calc(100vh-10rem)] rounded-2xl ring-1 ring-white/10">
+            <div className="overflow-y-auto max-h-[calc(100vh-10rem)] rounded-lg border border-border">
               <ResumePreview resume={resume} />
             </div>
           </div>

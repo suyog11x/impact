@@ -13,8 +13,8 @@ export default function DashboardLayout({ children, role = 'student' }: Dashboar
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-lime/30 border-t-lime rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-bg-primary flex items-center justify-center">
+        <div className="w-12 h-12 border-2 border-gold/30 border-t-gold rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -24,15 +24,16 @@ export default function DashboardLayout({ children, role = 'student' }: Dashboar
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-bg-primary relative">
+      <div className="gold-glow top-0 right-0" />
       <Sidebar role={role} />
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="pl-[244px] pr-6 pt-24 pb-8 transition-all duration-300"
+        className="pl-[260px] pr-8 pt-8 pb-12 transition-all duration-300 relative z-10"
       >
-        <div className="max-w-[1400px] mx-auto">{children}</div>
+        <div className="max-w-7xl mx-auto">{children}</div>
       </motion.main>
     </div>
   );

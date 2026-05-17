@@ -5,9 +5,9 @@ import NeonButton from '../../components/ui/NeonButton';
 import Badge from '../../components/ui/Badge';
 
 const interviewTypes = [
-  { icon: <Brain size={32} />, title: 'Technical', desc: 'AI-conducted technical interview with DSA & system design questions', duration: '45 min', difficulty: 'Hard' },
-  { icon: <Users size={32} />, title: 'HR', desc: 'Behavioral and HR round with common placement questions', duration: '30 min', difficulty: 'Medium' },
-  { icon: <BarChart3 size={32} />, title: 'Aptitude', desc: 'Quantitative, logical reasoning and verbal ability test', duration: '60 min', difficulty: 'Easy' },
+  { icon: <Brain size={36} />, title: 'Technical', desc: 'AI-conducted technical interview with DSA & system design questions', duration: '45 min', difficulty: 'Hard' },
+  { icon: <Users size={36} />, title: 'HR', desc: 'Behavioral and HR round with common placement questions', duration: '30 min', difficulty: 'Medium' },
+  { icon: <BarChart3 size={36} />, title: 'Aptitude', desc: 'Quantitative, logical reasoning and verbal ability test', duration: '60 min', difficulty: 'Easy' },
 ];
 
 const previousReports = [
@@ -19,12 +19,13 @@ const previousReports = [
 export default function MockInterviews() {
   return (
     <div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="text-3xl font-heading font-bold tracking-tight text-text-primary">Mock Interviews</h1>
-        <p className="text-text-secondary font-body mt-1">Practice with AI-conducted mock interviews tailored to your target companies</p>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+        <p className="premium-label mb-4">Practice</p>
+        <h1 className="text-5xl md:text-6xl font-heading font-bold tracking-tight text-text-primary">Mock Interviews</h1>
+        <p className="text-text-secondary font-body mt-3 text-lg">Practice with AI-conducted mock interviews tailored to your target companies</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         {interviewTypes.map((type, idx) => (
           <motion.div
             key={type.title}
@@ -32,12 +33,12 @@ export default function MockInterviews() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
           >
-            <GlassCard className="flex flex-col h-full">
-              <div className="text-lime mb-4">{type.icon}</div>
-              <h3 className="text-xl font-heading font-semibold text-text-primary mb-2">{type.title}</h3>
+            <GlassCard className="p-6 flex flex-col h-full" hover accent>
+              <div className="text-gold mb-4">{type.icon}</div>
+              <h3 className="text-2xl font-heading text-text-primary mb-2">{type.title}</h3>
               <p className="text-sm font-body text-text-secondary flex-1">{type.desc}</p>
               <div className="flex items-center gap-3 mt-4 mb-4">
-                <div className="flex items-center gap-1.5 text-xs text-muted font-mono">
+                <div className="flex items-center gap-1.5 text-xs text-text-secondary font-body">
                   <Clock size={14} /> {type.duration}
                 </div>
                 <Badge variant={
@@ -55,8 +56,8 @@ export default function MockInterviews() {
         ))}
       </div>
 
-      <GlassCard>
-        <h3 className="font-heading font-semibold text-text-primary mb-6">Previous Reports</h3>
+      <GlassCard className="p-6">
+        <h3 className="font-heading text-xl text-text-primary mb-6">Previous Reports</h3>
         <div className="space-y-3">
           {previousReports.map((report, idx) => (
             <motion.div
@@ -64,11 +65,11 @@ export default function MockInterviews() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="glass rounded-xl p-4 flex items-center justify-between"
+              className="bg-bg-elevated rounded-xl p-4 flex items-center justify-between"
             >
               <div>
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="font-heading font-medium text-text-primary">{report.type}</span>
+                  <span className="font-heading text-text-primary">{report.type}</span>
                   <Badge variant={report.score >= 80 ? 'success' : report.score >= 60 ? 'warning' : 'danger'}>
                     {report.score}%
                   </Badge>

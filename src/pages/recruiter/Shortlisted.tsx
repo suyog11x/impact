@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ClipboardList, Calendar, Trash2, Mail, ExternalLink, ChevronRight, UserCheck, MoreHorizontal } from 'lucide-react';
 import GlassCard from '../../components/ui/GlassCard';
-import Badge from '../../components/ui/Badge';
 import NeonButton from '../../components/ui/NeonButton';
 
 const initialShortlisted = [
@@ -112,7 +111,7 @@ export default function Shortlisted() {
                         <Calendar size={16} /> Schedule
                       </NeonButton>
                     ) : (
-                      <NeonButton variant="outline" size="md">
+                      <NeonButton variant="secondary" size="md">
                         <UserCheck size={16} /> Move to Final
                       </NeonButton>
                     )}

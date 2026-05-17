@@ -22,7 +22,7 @@ export const ResumeDropzone = ({ onFileUrlChange, playgroundView = false }: Resu
   return (
     <div
       className={cx(
-        'border-2 border-dashed border-white/15 rounded-2xl text-center transition-all hover:border-lime/40 cursor-pointer',
+        'border-2 border-dashed border-border rounded-2xl text-center transition-all hover:border-gold/40 cursor-pointer',
         playgroundView ? 'p-6' : 'p-10'
       )}
       onClick={() => inputRef.current?.click()}
@@ -43,13 +43,13 @@ export const ResumeDropzone = ({ onFileUrlChange, playgroundView = false }: Resu
           if (file) handleFile(file);
         }}
       />
-      <Upload size={28} className="mx-auto mb-3 text-muted" />
+      <Upload size={28} className="mx-auto mb-3 text-text-muted" />
       <p className="font-body text-sm text-text-secondary">
-        <span className="text-lime font-semibold">Click to upload</span> or drag & drop a PDF resume
+        <span className="text-gold font-semibold">Click to upload</span> or drag & drop a PDF resume
       </p>
       <button
         onClick={e => { e.stopPropagation(); onFileUrlChange(null); }}
-        className="mt-3 text-xs text-muted hover:text-red-400 transition-colors flex items-center gap-1 mx-auto"
+        className="mt-3 text-xs text-text-muted hover:text-danger transition-colors flex items-center gap-1 mx-auto"
       >
         <FileText size={12} /> Clear
       </button>
