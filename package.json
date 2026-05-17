@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:server": "node server/index.js",
     "dev:python": "cd backend && uvicorn main:app --reload --port 8000",
-    "dev:all": "concurrently --kill-others-on-fail -n \"frontend,express,fastapi\" -c \"cyan,yellow,magenta\" \"npm run dev\" \"npm run dev:server\" \"npm run dev:python\"",
+    "dev:all": "concurrently -n \"frontend,express,fastapi\" -c \"cyan,yellow,magenta\" \"npm run dev\" \"npm run dev:server\" \"npm run dev:python\"",
     "setup": "npm install && cd server && npm install && cd ..",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
