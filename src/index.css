@@ -132,3 +132,27 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-gold);
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+  50%       { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.08); }
+}
+.pulse-gold { animation: pulse-gold 2.5s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.8s infinite;
+}
