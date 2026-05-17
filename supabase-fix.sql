@@ -1,6 +1,7 @@
 -- ============================================================
 -- NUCLEAR FIX — Run this in Supabase SQL Editor
--- Drops ALL triggers on auth.users, rebuilds profiles cleanly
+-- Drops ALL triggers on auth.users, rebuilds profiles cleanly,
+-- and auto-confirms all users (bypassing email confirmation failures).
 -- ============================================================
 
 -- STEP 1: Find and drop ALL triggers on auth.users
@@ -24,6 +25,7 @@ $$;
 DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
 DROP FUNCTION IF EXISTS public.create_profile_for_user() CASCADE;
 DROP FUNCTION IF EXISTS public.on_auth_user_created() CASCADE;
+DROP FUNCTION IF EXISTS public.auto_confirm_new_user() CASCADE;
 
 -- STEP 3: Drop and recreate the profiles table
 DROP TABLE IF EXISTS public.profiles CASCADE;
@@ -40,7 +42,7 @@ CREATE TABLE public.profiles (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- STEP 4: Create a minimal, safe trigger function
+-- STEP 4: Create a minimal, safe trigger function for profiles
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -62,22 +64,42 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$;
 
--- STEP 5: Attach trigger
+-- STEP 5: Attach trigger to insert profile on signup
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_new_user();
 
--- STEP 6: RLS
+-- STEP 6: Create an auto-confirm trigger function (Bypasses email verification)
+CREATE OR REPLACE FUNCTION public.auto_confirm_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  NEW.email_confirmed_at = now();
+  NEW.confirmed_at = now();
+  RETURN NEW;
+END;
+$$;
+
+-- STEP 7: Attach trigger to auto-confirm users BEFORE insert in auth.users
+CREATE TRIGGER tr_auto_confirm_new_user
+  BEFORE INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.auto_confirm_new_user();
+
+-- STEP 8: Row-Level Security (RLS) configuration
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Anyone can insert their profile"
   ON public.profiles FOR INSERT
   WITH CHECK (true);
 
-CREATE POLICY "Users can view own profile"
+-- Changed to true so that recruiters can view profiles of student candidates
+CREATE POLICY "Anyone can view profiles"
   ON public.profiles FOR SELECT
-  USING (auth.uid() = id);
+  USING (true);
 
 CREATE POLICY "Users can update own profile"
   ON public.profiles FOR UPDATE

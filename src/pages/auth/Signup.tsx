@@ -73,9 +73,18 @@ export default function Signup() {
       if (data.user.identities && data.user.identities.length > 0 && data.session) {
         navigate(`/${role}/dashboard`);
       } else {
-        // Supabase requires email confirmation — tell the user
-        setSuccessMsg('Account created! Check your email to confirm, then log in.');
-        setLoading(false);
+        // Attempt automatic sign in immediately since our database trigger auto-confirms all emails
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (!signInError && signInData.session) {
+          navigate(`/${role}/dashboard`);
+        } else {
+          setSuccessMsg('Account created successfully! You can now log in.');
+          setLoading(false);
+        }
       }
     } else {
       setLoading(false);
