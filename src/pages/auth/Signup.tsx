@@ -1,10 +1,16 @@
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, GraduationCap, Calendar, Building2, ArrowRight } from 'lucide-react';
+import {
+  User, Mail, Lock, GraduationCap, Calendar, Building2,
+  ArrowRight, Code, GitFork, CheckCircle2, XCircle, Loader2
+} from 'lucide-react';
 import Input from '../../components/ui/Input';
 import NeonButton from '../../components/ui/NeonButton';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
+import { validateLeetCodeUsername } from '../../hooks/useLeetCode';
+
+type ValidationState = 'idle' | 'checking' | 'valid' | 'invalid';
 
 export default function Signup() {
   const [role, setRole] = useState('student');
@@ -15,19 +21,69 @@ export default function Signup() {
   const [college, setCollege] = useState('');
   const [department, setDepartment] = useState('');
   const [graduationYear, setGraduationYear] = useState('');
-  
+  const [githubUsername, setGithubUsername] = useState('');
+
+  // LeetCode validation state
+  const [leetcodeUsername, setLeetcodeUsername] = useState('');
+  const [lcValidation, setLcValidation] = useState<ValidationState>('idle');
+  const [lcMessage, setLcMessage] = useState('');
+  const [lcAvatar, setLcAvatar] = useState<string | null>(null);
+  const [lcRealName, setLcRealName] = useState<string | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  // ── Real-time debounced LeetCode validation ──────────────────────────────────
+  useEffect(() => {
+    if (!leetcodeUsername.trim()) {
+      setLcValidation('idle');
+      setLcMessage('');
+      setLcAvatar(null);
+      setLcRealName(null);
+      return;
+    }
+
+    setLcValidation('checking');
+    setLcMessage('');
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    debounceRef.current = setTimeout(async () => {
+      const result = await validateLeetCodeUsername(leetcodeUsername.trim());
+      if (result.valid) {
+        setLcValidation('valid');
+        setLcMessage(`✓ Found: ${result.realName || result.username || leetcodeUsername}`);
+        setLcAvatar(result.avatar || null);
+        setLcRealName(result.realName || null);
+      } else {
+        setLcValidation('invalid');
+        setLcMessage(result.error || 'Username not found on LeetCode');
+        setLcAvatar(null);
+        setLcRealName(null);
+      }
+    }, 600);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [leetcodeUsername]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
+
+    if (role === 'student' && lcValidation !== 'valid') {
+      setError('Please enter a valid LeetCode username to continue');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSuccessMsg(null);
@@ -41,7 +97,9 @@ export default function Signup() {
           role,
           college,
           department,
-          graduation_year: graduationYear
+          graduation_year: graduationYear,
+          leetcode_username: role === 'student' ? leetcodeUsername.trim() : null,
+          github_username: githubUsername.trim() || null,
         }
       }
     });
@@ -53,7 +111,7 @@ export default function Signup() {
     }
 
     if (data.user) {
-      // Try to create a profile row
+      // Upsert profile with leetcode_username
       try {
         await supabase.from('profiles').upsert({
           id: data.user.id,
@@ -63,26 +121,22 @@ export default function Signup() {
           college: role === 'student' || role === 'recruiter' ? college : null,
           department: role === 'student' ? department : null,
           graduationYear: role === 'student' ? (graduationYear ? Number(graduationYear) : null) : null,
+          leetcode_username: role === 'student' ? leetcodeUsername.trim() : null,
+          github_username: githubUsername.trim() || null,
         });
       } catch (_err) {
         // Profile insert is best-effort
       }
 
-      // If the user's email is already confirmed (e.g. email confirm is disabled
-      // in Supabase), identities will be populated — navigate directly.
+      // Auto sign-in
       if (data.user.identities && data.user.identities.length > 0 && data.session) {
         navigate(`/${role}/dashboard`);
       } else {
-        // Attempt automatic sign in immediately since our database trigger auto-confirms all emails
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (!signInError && signInData.session) {
           navigate(`/${role}/dashboard`);
         } else {
-          setSuccessMsg('Account created successfully! You can now log in.');
+          setSuccessMsg('Account created! You can now log in.');
           setLoading(false);
         }
       }
@@ -91,8 +145,14 @@ export default function Signup() {
     }
   };
 
+  const lcBorderColor =
+    lcValidation === 'valid' ? 'border-green-500/60' :
+    lcValidation === 'invalid' ? 'border-red-500/60' :
+    '';
+
   return (
     <div className="min-h-screen bg-black noise-overlay flex">
+      {/* Left Panel */}
       <div className="hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
         <div className="absolute inset-0 grid-pattern" />
         <div className="absolute w-[500px] h-[500px] bg-lime/10 rounded-full blur-[150px]" />
@@ -106,9 +166,14 @@ export default function Signup() {
             <span className="text-black font-heading font-bold text-3xl">S</span>
           </div>
           <h1 className="text-5xl font-heading font-bold tracking-tight text-text-primary mb-4">SkillSync AI</h1>
-          <p className="text-xl text-text-secondary font-body">Join the future of placement preparation. Bridge the gap between academics and industry.</p>
+          <p className="text-xl text-text-secondary font-body">Join the future of placement preparation.</p>
           <div className="mt-12 space-y-4 text-left">
-            {['AI-Powered Skill Analysis', 'Personalized Learning Roadmaps', 'Placement Prediction Engine'].map((item) => (
+            {[
+              'AI-Powered Skill Analysis',
+              'Real LeetCode Stats & Insights',
+              'Personalized Learning Roadmaps',
+              'Placement Prediction Engine'
+            ].map((item) => (
               <div key={item} className="flex items-center gap-3 text-text-secondary">
                 <div className="w-2 h-2 bg-lime rounded-full" />
                 <span className="font-body">{item}</span>
@@ -118,7 +183,8 @@ export default function Signup() {
         </motion.div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">
+      {/* Right Panel */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -128,6 +194,7 @@ export default function Signup() {
             <h2 className="text-3xl font-heading font-bold tracking-tight text-text-primary mb-2">Create Account</h2>
             <p className="text-text-secondary font-body mb-8">Start your placement preparation journey</p>
 
+            {/* Role Selector */}
             <div className="flex gap-2 mb-8 p-1 glass rounded-xl">
               {['student', 'recruiter', 'admin'].map((r) => (
                 <button
@@ -144,8 +211,10 @@ export default function Signup() {
             </div>
 
             <form className="space-y-4" onSubmit={handleSignup}>
-              {error && <div className="text-red-500 text-sm font-body text-center">{error}</div>}
+              {error && <div className="text-red-400 text-sm font-body text-center bg-red-500/10 rounded-xl px-4 py-3 border border-red-500/20">{error}</div>}
               {successMsg && <div className="text-lime text-sm font-body text-center bg-lime/10 rounded-xl px-4 py-3 border border-lime/20">{successMsg}</div>}
+
+              {/* Basic Info */}
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Full Name" placeholder="John Doe" icon={<User size={16} />} value={fullName} onChange={e => setFullName(e.target.value)} required />
                 <Input label="Email" type="email" placeholder="john@college.edu" icon={<Mail size={16} />} value={email} onChange={e => setEmail(e.target.value)} required />
@@ -154,28 +223,88 @@ export default function Signup() {
                 <Input label="Password" type="password" placeholder="••••••••" icon={<Lock size={16} />} value={password} onChange={e => setPassword(e.target.value)} required />
                 <Input label="Confirm Password" type="password" placeholder="••••••••" icon={<Lock size={16} />} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
               </div>
-                {role === 'student' && (
-                  <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input label="College" placeholder="MIT College of Engineering" icon={<Building2 size={16} />} value={college} onChange={e => setCollege(e.target.value)} />
-                      <Input label="Department" placeholder="Computer Science" icon={<GraduationCap size={16} />} value={department} onChange={e => setDepartment(e.target.value)} />
-                    </div>
-                    <Input label="Graduation Year" type="number" placeholder="2026" icon={<Calendar size={16} />} value={graduationYear} onChange={e => setGraduationYear(e.target.value)} />
-                  </>
-                )}
 
-                {role === 'recruiter' && (
+              {/* Student Fields */}
+              {role === 'student' && (
+                <>
                   <div className="grid grid-cols-2 gap-4">
-                    <Input label="Company" placeholder="Company Name" icon={<Building2 size={16} />} value={college} onChange={e => setCollege(e.target.value)} />
-                    <Input label="Designation" placeholder="HR Manager" icon={<GraduationCap size={16} />} value={department} onChange={e => setDepartment(e.target.value)} />
+                    <Input label="College" placeholder="MIT College of Engineering" icon={<Building2 size={16} />} value={college} onChange={e => setCollege(e.target.value)} />
+                    <Input label="Department" placeholder="Computer Science" icon={<GraduationCap size={16} />} value={department} onChange={e => setDepartment(e.target.value)} />
                   </div>
-                )}
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input label="Graduation Year" type="number" placeholder="2026" icon={<Calendar size={16} />} value={graduationYear} onChange={e => setGraduationYear(e.target.value)} />
+                    <Input label="GitHub Username" placeholder="johndoe (optional)" icon={<GitFork size={16} />} value={githubUsername} onChange={e => setGithubUsername(e.target.value)} />
+                  </div>
 
-                {role === 'admin' && (
-                  <Input label="Organization" placeholder="Organization / College" icon={<Building2 size={16} />} value={college} onChange={e => setCollege(e.target.value)} />
-                )}
+                  {/* LeetCode Username — Real-time validated */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-body text-text-secondary uppercase tracking-widest">
+                      LeetCode Username <span className="text-red-400">*</span>
+                    </label>
+                    <div className={`flex items-center gap-2 bg-white/5 border rounded-xl px-3 py-2.5 transition-colors ${lcBorderColor || 'border-white/10'}`}>
+                      <Code size={16} className="text-text-muted shrink-0" />
+                      <input
+                        type="text"
+                        placeholder="your-leetcode-username"
+                        value={leetcodeUsername}
+                        onChange={e => setLeetcodeUsername(e.target.value)}
+                        required
+                        className="flex-1 bg-transparent text-text-primary font-body text-sm outline-none placeholder:text-text-muted"
+                      />
+                      {lcValidation === 'checking' && <Loader2 size={16} className="animate-spin text-text-muted shrink-0" />}
+                      {lcValidation === 'valid' && <CheckCircle2 size={16} className="text-green-400 shrink-0" />}
+                      {lcValidation === 'invalid' && <XCircle size={16} className="text-red-400 shrink-0" />}
+                    </div>
 
-              <NeonButton type="submit" className="w-full mt-6" disabled={loading}>
+                    {/* Validation feedback */}
+                    {lcMessage && (
+                      <p className={`text-xs font-body px-1 ${lcValidation === 'valid' ? 'text-green-400' : 'text-red-400'}`}>
+                        {lcMessage}
+                      </p>
+                    )}
+
+                    {/* LeetCode Profile Preview on valid */}
+                    {lcValidation === 'valid' && lcAvatar && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-3 mt-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl"
+                      >
+                        <img src={lcAvatar} alt="LC Avatar" className="w-9 h-9 rounded-full border border-green-500/40" />
+                        <div>
+                          <p className="text-sm font-heading text-text-primary">{lcRealName || leetcodeUsername}</p>
+                          <p className="text-xs text-green-400 font-body">LeetCode account verified ✓</p>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {lcValidation === 'idle' && !leetcodeUsername && (
+                      <p className="text-xs text-text-muted font-body px-1">
+                        Required — we pull your real stats from LeetCode
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Recruiter Fields */}
+              {role === 'recruiter' && (
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Company" placeholder="Company Name" icon={<Building2 size={16} />} value={college} onChange={e => setCollege(e.target.value)} />
+                  <Input label="Designation" placeholder="HR Manager" icon={<GraduationCap size={16} />} value={department} onChange={e => setDepartment(e.target.value)} />
+                </div>
+              )}
+
+              {/* Admin Fields */}
+              {role === 'admin' && (
+                <Input label="Organization" placeholder="Organization / College" icon={<Building2 size={16} />} value={college} onChange={e => setCollege(e.target.value)} />
+              )}
+
+              <NeonButton
+                type="submit"
+                className="w-full mt-6"
+                disabled={loading || (role === 'student' && lcValidation !== 'valid')}
+              >
                 {loading ? 'Creating Account...' : 'Create Account'} <ArrowRight size={18} />
               </NeonButton>
             </form>

@@ -12,6 +12,8 @@ export interface UserProfile {
   department?: string;
   graduation_year?: string;
   avatar_url?: string;
+  leetcode_username?: string;
+  github_username?: string;
 }
 
 type AuthContextType = {
@@ -20,6 +22,7 @@ type AuthContextType = {
   session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
   signOut: async () => {},
+  refreshProfile: async () => {},
 });
 
 function buildProfile(user: SupabaseUser): UserProfile {
@@ -41,6 +45,8 @@ function buildProfile(user: SupabaseUser): UserProfile {
     department: meta.department,
     graduation_year: meta.graduation_year,
     avatar_url: meta.avatar_url,
+    leetcode_username: meta.leetcode_username,
+    github_username: meta.github_username,
   };
 }
 
@@ -49,6 +55,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const refreshProfile = async () => {
+    const { data: { user: freshUser } } = await supabase.auth.getUser();
+    if (freshUser) {
+      setUser(freshUser);
+      setProfile(buildProfile(freshUser));
+    }
+  };
 
   useEffect(() => {
     // Get initial session
@@ -79,7 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, profile, session, loading, signOut }}>
+    <AuthContext.Provider value={{ user, profile, session, loading, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
