@@ -18,6 +18,11 @@ import CompanyTracker from './pages/student/CompanyTracker';
 import MockInterviews from './pages/student/MockInterviews';
 import JobBoard from './pages/student/JobBoard';
 
+import InterviewSetup from './pages/student/interview/InterviewSetup';
+import InterviewEngine from './pages/student/interview/InterviewEngine';
+import InterviewReport from './pages/student/interview/InterviewReport';
+import InterviewHistory from './pages/student/interview/InterviewHistory';
+
 import RecruiterDashboard from './pages/recruiter/Dashboard';
 import CandidateSearch from './pages/recruiter/CandidateSearch';
 import JDMatcher from './pages/recruiter/JDMatcher';
@@ -52,6 +57,10 @@ export default function App() {
         <Route path="/student/placement-prediction" element={<DashboardLayout role="student"><PlacementPrediction /></DashboardLayout>} />
         <Route path="/student/company-tracker" element={<DashboardLayout role="student"><CompanyTracker /></DashboardLayout>} />
         <Route path="/student/mock-interviews" element={<DashboardLayout role="student"><MockInterviews /></DashboardLayout>} />
+        <Route path="/student/interview/setup" element={<DashboardLayout role="student"><InterviewSetup /></DashboardLayout>} />
+        <Route path="/student/interview/session/:sessionId" element={<DashboardLayout role="student"><InterviewEngine /></DashboardLayout>} />
+        <Route path="/student/interview/report/:sessionId" element={<DashboardLayout role="student"><InterviewReport /></DashboardLayout>} />
+        <Route path="/student/interview/history" element={<DashboardLayout role="student"><InterviewHistory /></DashboardLayout>} />
         <Route path="/student/jobs" element={<DashboardLayout role="student"><JobBoard /></DashboardLayout>} />
 
         <Route path="/recruiter/dashboard" element={<DashboardLayout role="recruiter"><RecruiterDashboard /></DashboardLayout>} />

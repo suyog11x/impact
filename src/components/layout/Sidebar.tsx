@@ -79,7 +79,8 @@ export default function Sidebar({ role = 'student' }: SidebarProps) {
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
         {items.map((item) => {
           const Icon = item.icon;
-          const active = location.pathname === item.path;
+          const active = location.pathname === item.path
+            || (item.path === '/student/mock-interviews' && location.pathname.startsWith('/student/interview'));
           return (
             <Link
               key={item.path}
