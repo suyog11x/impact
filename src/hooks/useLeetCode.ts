@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_LEETCODE_URL || 'http://localhost:5000';
 
 export interface LeetCodeStats {
   username: string;
